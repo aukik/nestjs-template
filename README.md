@@ -289,3 +289,121 @@ This structure follows NestJS best practices, promoting scalability, maintainabi
 **Importance:** Maintains code quality, catches bugs early, and facilitates refactoring.
 
 These components collectively provide a robust foundation for the application, handling cross-cutting concerns like configuration, logging, security, and data validation. They are designed to be reusable across different parts of the application, promoting consistency and reducing code duplication.
+
+
+# NestJS Passenger Module Components Explanation
+
+## 1. PassengerPipe (Validation)
+
+```typescript
+import * as Joi from 'joi';
+import { JoiValidationPipe } from '../../common';
+import { PassengerData, PassengerInput } from '../model';
+
+export class PassengerPipe extends JoiValidationPipe {
+    public buildSchema(): Joi.Schema {
+        return Joi.object<PassengerInput>({
+            firstName: Joi.string().required().max(PassengerData.NAME_LENGTH),
+            lastName: Joi.string().required().max(PassengerData.NAME_LENGTH)
+        });
+    }
+}
+```
+
+- Purpose: Defines input validation for passenger data.
+- Key Points:
+  - Extends `JoiValidationPipe` from the common module.
+  - Uses Joi to create a validation schema for `PassengerInput`.
+  - Enforces required fields and maximum length for names.
+  - TODO comment suggests adding regex for enhanced security.
+
+## 2. PassengerInput (Data Transfer Object)
+
+```typescript
+import { PickType } from '@nestjs/swagger';
+import { PassengerData } from './passenger.data';
+
+export class PassengerInput extends PickType(PassengerData, ['firstName', 'lastName'] as const) {}
+```
+
+- Purpose: Defines the structure for input data when creating a passenger.
+- Key Points:
+  - Uses `PickType` from `@nestjs/swagger` to create a subset of `PassengerData`.
+  - Only includes `firstName` and `lastName` fields.
+
+## 3. PassengerService
+
+```typescript
+import { Injectable } from '@nestjs/common';
+import { PrismaService } from '../../common';
+import { PassengerData, PassengerInput } from '../model';
+
+@Injectable()
+export class PassengerService {
+    public constructor(private readonly prismaService: PrismaService) {}
+
+    public async find(): Promise<PassengerData[]> {
+        const passengers = await this.prismaService.passenger.findMany({});
+        return passengers.map(passenger => new PassengerData(passenger));
+    }
+
+    public async create(data: PassengerInput): Promise<PassengerData> {
+        const passenger = await this.prismaService.passenger.create({ data });
+        return new PassengerData(passenger);
+    }
+}
+```
+
+- Purpose: Handles business logic for passenger-related operations.
+- Key Points:
+  - Injects `PrismaService` for database operations.
+  - `find()` method retrieves all passengers from the database.
+  - `create()` method adds a new passenger to the database.
+  - Both methods return data as `PassengerData` objects.
+
+## 4. PassengerData (Data Model)
+
+```typescript
+import { ApiProperty } from '@nestjs/swagger';
+import { Passenger } from '@prisma/client';
+
+export class PassengerData {
+    public static readonly NAME_LENGTH = 50;
+
+    @ApiProperty({ description: 'Passenger unique ID', example: '36635263' })
+    public readonly id: number;
+
+    @ApiProperty({ description: 'First name', example: 'John' })
+    public readonly firstName: string;
+
+    @ApiProperty({ description: 'Last name', example: 'Doe' })
+    public readonly lastName: string;
+
+    public constructor(entity: Passenger) {
+        this.id = entity.id;
+        this.firstName = entity.firstName;
+        this.lastName = entity.lastName;
+    }
+}
+```
+
+- Purpose: Defines the structure and properties of a Passenger entity.
+- Key Points:
+  - Uses `@ApiProperty` decorators for Swagger documentation.
+  - Defines a static `NAME_LENGTH` constant used in validation.
+  - Constructor takes a Prisma `Passenger` entity and maps its properties.
+
+## Interaction Flow
+
+1. When creating a passenger:
+   - Input data is validated using `PassengerPipe`.
+   - Validated data (as `PassengerInput`) is passed to `PassengerService.create()`.
+   - Service uses Prisma to create a database record.
+   - Returns a `PassengerData` object.
+
+2. When fetching passengers:
+   - `PassengerService.find()` is called.
+   - Service retrieves all passengers from the database using Prisma.
+   - Each passenger is converted to a `PassengerData` object before being returned.
+
+This structure ensures type safety, input validation, and clear separation of concerns between data transfer, business logic, and data persistence layers.
