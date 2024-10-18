@@ -21,6 +21,7 @@ export class PassengerController {
     ) { }
 
     @Get()
+    @UseGuards(RestrictedGuard)
     @ApiOperation({ summary: 'Find passengers' })
     @ApiResponse({ status: HttpStatus.OK, isArray: true, type: PassengerData })
     public async find(): Promise<PassengerData[]> {
