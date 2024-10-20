@@ -64,8 +64,6 @@ describe('Passenger API', () => {
             .send({
                 firstName: 'John',
                 lastName: 'Doe',
-                email:'test@dev.com',
-                password:'password'
             })
             .expect(HttpStatus.CREATED)
             .then(response => {
