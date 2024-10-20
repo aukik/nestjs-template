@@ -303,7 +303,7 @@ These components collectively provide a robust foundation for the application, h
 
 ## Components Overview
 
-1. PassengerInput (Data Model)
+1. PassengerData (Data Model)
 2. PassengerInput (Data Transfer Object)
 3. PassengerPipe (Validation)
 4. PassengerService (Business Logic)

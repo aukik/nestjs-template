@@ -35,15 +35,21 @@ describe('Passenger API', () => {
         app.close()
     );
 
-    it('Should return empty passenger list', async () =>
-
+    it('Should return empty passenger list', async () =>{
+        const token = jwt.sign({ role: 'restricted' }, `${process.env.JWT_SECRET}`, {
+            algorithm: 'HS256',
+            issuer: `${process.env.JWT_ISSUER}`
+        });
         request(app.getHttpServer() as App)
-            .get('/passengers')
-            .expect(HttpStatus.OK)
-            .then(response => {
-                expect(response.body).toBeInstanceOf(Array);
-                expect(response.body.length).toEqual(0);
-            })
+        .get('/passengers')
+        .set('Authorization', `Bearer ${token}`)
+        .expect(HttpStatus.OK)
+        .then(response => {
+            expect(response.body.data).toBeInstanceOf(Array);
+            expect(response.body.data.length).toEqual(0);
+        })
+    }
+    
     );
 
     it('Should insert new passenger in the API', async () => {
@@ -58,12 +64,14 @@ describe('Passenger API', () => {
             .set('Authorization', `Bearer ${token}`)
             .send({
                 firstName: 'John',
-                lastName: 'Doe'
+                lastName: 'Doe',
+                email:"test@dev.com",
+                password:"password"
             })
             .expect(HttpStatus.CREATED)
             .then(response => {
-                expect(response.body.firstName).toEqual('John');
-                expect(response.body.lastName).toEqual('Doe');
+                expect(response.body.data.firstName).toEqual('John');
+                expect(response.body.data.lastName).toEqual('Doe');
             });
     });
 
