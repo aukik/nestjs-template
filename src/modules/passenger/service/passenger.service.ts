@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 
 import { PrismaService } from '../../common';
-import { PassengerData, PassengerInput } from '../model';
+import { PassengerInput,PassengerResponse, PassengersListResponse } from '../model';
 
 @Injectable()
 export class PassengerService {
@@ -15,11 +15,19 @@ export class PassengerService {
      *
      * @returns A passenger list
      */
-    public async find(): Promise<PassengerData[]> {
-
-        const passengers = await this.prismaService.passenger.findMany({});
-
-        return passengers.map(passenger => new PassengerData(passenger));
+    public async find(): Promise<PassengersListResponse> {
+        const passengers = await this.prismaService.passenger.findMany({
+            select: {
+                id: true,
+                createdAt: true,
+                updatedAt: true,
+                firstName: true,
+                lastName: true,
+                email: true
+            }
+        });
+        
+        return new PassengersListResponse(passengers);
     }
 
     /**
@@ -28,13 +36,20 @@ export class PassengerService {
      * @param data Passenger details
      * @returns A passenger created in the database
      */
-    public async create(data: PassengerInput): Promise<PassengerData> {
-
+    public async create(data: PassengerInput): Promise<PassengerResponse> {
         const passenger = await this.prismaService.passenger.create({
-            data
+            data,
+            select: {
+                id: true,
+                createdAt: true,
+                updatedAt: true,
+                firstName: true,
+                lastName: true,
+                email: true,
+            }
         });
-
-        return new PassengerData(passenger);
+        
+        return new PassengerResponse(passenger);
     }
 
 }

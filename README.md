@@ -1,4 +1,3 @@
-
 # NestJS 10 API project template
 
 [![License](https://img.shields.io/github/license/saluki/nestjs-template.svg)](https://github.com/saluki/nestjs-template/blob/master/LICENSE)
@@ -27,7 +26,7 @@ Before starting, make sure you have at least those components on your workstatio
 
 Start by cloning this project on your workstation
 
-``` sh
+```sh
 git clone https://github.com/saluki/nestjs-template my-project
 ```
 
@@ -133,13 +132,12 @@ curl -H 'Authorization: Bearer ThisMustBeChanged' http://localhost:3000/api/v1/h
 
 The goal of this project is to provide a clean and up-to-date "starter pack" for REST API projects that are built with NestJS.
 
-
-
 # NestJS Application Structure Explanation
 
 ### Root Directory
 
 - **prisma/**: Contains Prisma ORM related files
+
   - **schema.prisma**: Defines your data model and database schema
   - **migrations/**: Holds database migration files
     - **20240113113057_passengers_table/migration.sql**: A specific migration for creating the passengers table
@@ -148,13 +146,16 @@ The goal of this project is to provide a clean and up-to-date "starter pack" for
   - **server.ts**: The entry point of the application
 
 ### Modules
+
 The application is organized into modules, which are the building blocks of a NestJS application:
 
 - **App Module (src/modules/app.module.ts)**
+
   - The root module of the application
   - **tokens.ts**: Likely contains dependency injection tokens
 
 - **Common Module (src/modules/common/)**
+
   - Contains shared functionality used across the application
   - **Components**:
     - **Controllers**: health.controller.ts for health checks
@@ -188,9 +189,8 @@ The application is organized into modules, which are the building blocks of a Ne
 
 This structure follows NestJS best practices, promoting scalability, maintainability, and separation of concerns in the application architecture.
 
-
-
 # NestJS Common Module Components
+
 ## Controllers
 
 ### health.controller.ts
@@ -198,6 +198,7 @@ This structure follows NestJS best practices, promoting scalability, maintainabi
 **Purpose:** Provides endpoints for health checks of the application.
 
 **Functionality:**
+
 - Typically exposes a `/health` endpoint.
 - Returns the status of the application and its dependencies (e.g., database connection).
 
@@ -210,6 +211,7 @@ This structure follows NestJS best practices, promoting scalability, maintainabi
 **Purpose:** Implements input validation using the Joi library.
 
 **Functionality:**
+
 - Validates incoming request data (body, query parameters, etc.) against predefined schemas.
 - Throws exceptions for invalid data, preventing it from reaching the route handlers.
 
@@ -222,6 +224,7 @@ This structure follows NestJS best practices, promoting scalability, maintainabi
 **Purpose:** Implements logging functionality for requests and responses.
 
 **Functionality:**
+
 - Intercepts incoming requests and outgoing responses.
 - Logs relevant information such as request method, URL, response status, and execution time.
 
@@ -234,6 +237,7 @@ This structure follows NestJS best practices, promoting scalability, maintainabi
 **Purpose:** Manages application configuration.
 
 **Functionality:**
+
 - Loads and provides access to environment-specific configuration (e.g., from .env files).
 - Often uses NestJS's ConfigModule for centralized configuration management.
 
@@ -244,6 +248,7 @@ This structure follows NestJS best practices, promoting scalability, maintainabi
 **Purpose:** Provides a centralized logging service.
 
 **Functionality:**
+
 - Implements methods for different log levels (info, error, debug, etc.).
 - May integrate with external logging services or format logs for better readability.
 
@@ -254,6 +259,7 @@ This structure follows NestJS best practices, promoting scalability, maintainabi
 **Purpose:** Manages the Prisma ORM database connection.
 
 **Functionality:**
+
 - Initializes and provides the Prisma client to other parts of the application.
 - Handles database connection lifecycle (connect, disconnect).
 
@@ -266,11 +272,13 @@ This structure follows NestJS best practices, promoting scalability, maintainabi
 **Purpose:** Implement authentication and authorization mechanisms.
 
 **Types might include:**
+
 - **guest.guard.ts:** Allows access to public routes.
 - **restricted.guard.ts:** Protects routes that require authentication.
 - **health.guard.ts:** Specifically for protecting health check endpoints.
 
 **Functionality:**
+
 - Intercept requests and check for necessary credentials or permissions.
 - Prevent unauthorized access to protected routes.
 
@@ -283,6 +291,7 @@ This structure follows NestJS best practices, promoting scalability, maintainabi
 **Purpose:** Contains unit tests for the common module components.
 
 **Functionality:**
+
 - Tests individual units of code in isolation (e.g., functions, classes).
 - Ensures that each component of the common module works as expected.
 
@@ -294,36 +303,36 @@ These components collectively provide a robust foundation for the application, h
 
 ## Components Overview
 
-1. PassengerData (Data Model)
+1. PassengerInput (Data Model)
 2. PassengerInput (Data Transfer Object)
 3. PassengerPipe (Validation)
 4. PassengerService (Business Logic)
 
 ## Detailed Component Descriptions and Flow
 
-### 1. PassengerData (Data Model)
+### 1. PassengerInput (Data Model)
 
 ```typescript
-import { ApiProperty } from '@nestjs/swagger';
-import { Passenger } from '@prisma/client';
+import { ApiProperty } from "@nestjs/swagger";
+import { Passenger } from "@prisma/client";
 
-export class PassengerData {
-    public static readonly NAME_LENGTH = 50;
+export class PassengerInput {
+  public static readonly NAME_LENGTH = 50;
 
-    @ApiProperty({ description: 'Passenger unique ID', example: '36635263' })
-    public readonly id: number;
+  @ApiProperty({ description: "Passenger unique ID", example: "36635263" })
+  public readonly id: number;
 
-    @ApiProperty({ description: 'First name', example: 'John' })
-    public readonly firstName: string;
+  @ApiProperty({ description: "First name", example: "John" })
+  public readonly firstName: string;
 
-    @ApiProperty({ description: 'Last name', example: 'Doe' })
-    public readonly lastName: string;
+  @ApiProperty({ description: "Last name", example: "Doe" })
+  public readonly lastName: string;
 
-    public constructor(entity: Passenger) {
-        this.id = entity.id;
-        this.firstName = entity.firstName;
-        this.lastName = entity.lastName;
-    }
+  public constructor(entity: Passenger) {
+    this.id = entity.id;
+    this.firstName = entity.firstName;
+    this.lastName = entity.lastName;
+  }
 }
 ```
 
@@ -333,29 +342,32 @@ export class PassengerData {
 ### 2. PassengerInput (Data Transfer Object)
 
 ```typescript
-import { PickType } from '@nestjs/swagger';
-import { PassengerData } from './passenger.data';
+import { PickType } from "@nestjs/swagger";
+import { PassengerInput } from "./passenger.data";
 
-export class PassengerInput extends PickType(PassengerData, ['firstName', 'lastName'] as const) {}
+export class PassengerInput extends PickType(PassengerInput, [
+  "firstName",
+  "lastName",
+] as const) {}
 ```
 
 - Defines the structure for creating a new passenger.
-- Picks only `firstName` and `lastName` from PassengerData.
+- Picks only `firstName` and `lastName` from PassengerInput.
 
 ### 3. PassengerPipe (Validation)
 
 ```typescript
-import * as Joi from 'joi';
-import { JoiValidationPipe } from '../../common';
-import { PassengerData, PassengerInput } from '../model';
+import * as Joi from "joi";
+import { JoiValidationPipe } from "../../common";
+import { PassengerInput, PassengerInput } from "../model";
 
 export class PassengerPipe extends JoiValidationPipe {
-    public buildSchema(): Joi.Schema {
-        return Joi.object<PassengerInput>({
-            firstName: Joi.string().required().max(PassengerData.NAME_LENGTH),
-            lastName: Joi.string().required().max(PassengerData.NAME_LENGTH)
-        });
-    }
+  public buildSchema(): Joi.Schema {
+    return Joi.object<PassengerInput>({
+      firstName: Joi.string().required().max(PassengerInput.NAME_LENGTH),
+      lastName: Joi.string().required().max(PassengerInput.NAME_LENGTH),
+    });
+  }
 }
 ```
 
@@ -365,23 +377,23 @@ export class PassengerPipe extends JoiValidationPipe {
 ### 4. PassengerService (Business Logic)
 
 ```typescript
-import { Injectable } from '@nestjs/common';
-import { PrismaService } from '../../common';
-import { PassengerData, PassengerInput } from '../model';
+import { Injectable } from "@nestjs/common";
+import { PrismaService } from "../../common";
+import { PassengerInput, PassengerInput } from "../model";
 
 @Injectable()
 export class PassengerService {
-    public constructor(private readonly prismaService: PrismaService) {}
+  public constructor(private readonly prismaService: PrismaService) {}
 
-    public async find(): Promise<PassengerData[]> {
-        const passengers = await this.prismaService.passenger.findMany({});
-        return passengers.map(passenger => new PassengerData(passenger));
-    }
+  public async find(): Promise<PassengerInput[]> {
+    const passengers = await this.prismaService.passenger.findMany({});
+    return passengers.map((passenger) => new PassengerInput(passenger));
+  }
 
-    public async create(data: PassengerInput): Promise<PassengerData> {
-        const passenger = await this.prismaService.passenger.create({ data });
-        return new PassengerData(passenger);
-    }
+  public async create(data: PassengerInput): Promise<PassengerInput> {
+    const passenger = await this.prismaService.passenger.create({ data });
+    return new PassengerInput(passenger);
+  }
 }
 ```
 
@@ -396,17 +408,18 @@ export class PassengerService {
 2. PassengerPipe validates the input using the Joi schema.
 3. If valid, data is passed to PassengerService.create() method.
 4. PassengerService uses PrismaService to create a new database record.
-5. The created passenger is wrapped in a PassengerData object and returned.
+5. The created passenger is wrapped in a PassengerInput object and returned.
 
 ### Fetching Passengers:
 
 1. Client requests to fetch passengers.
 2. Request is routed to PassengerService.find() method.
 3. PassengerService uses PrismaService to retrieve all passengers from the database.
-4. Each passenger is converted to a PassengerData object.
-5. An array of PassengerData objects is returned to the client.
+4. Each passenger is converted to a PassengerInput object.
+5. An array of PassengerInput objects is returned to the client.
 
 This structure ensures:
+
 - Clear separation of concerns
 - Type safety throughout the application
 - Consistent data representation

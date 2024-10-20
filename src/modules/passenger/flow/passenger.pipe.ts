@@ -11,7 +11,9 @@ export class PassengerPipe extends JoiValidationPipe {
             // @todo When building input validation, also include regex
             // and other techniques for optimal security
             firstName: Joi.string().required().max(PassengerData.NAME_LENGTH),
-            lastName: Joi.string().required().max(PassengerData.NAME_LENGTH)
+            lastName: Joi.string().required().max(PassengerData.NAME_LENGTH),
+            email: Joi.string().required().max(PassengerData.NAME_LENGTH),
+            password: Joi.string().required().max(PassengerData.NAME_LENGTH)
         });
 
     }

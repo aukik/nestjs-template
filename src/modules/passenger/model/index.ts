@@ -1,2 +1,2 @@
 export { PassengerInput } from './passenger.input';
-export { PassengerData } from './passenger.data';
+export { PassengerData,PassengerResponse,PassengersListResponse } from './passenger.data';

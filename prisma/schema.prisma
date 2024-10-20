@@ -17,4 +17,6 @@ model Passenger {
 
     firstName String @unique
     lastName  String
+    email     String
+    password  String
 }
