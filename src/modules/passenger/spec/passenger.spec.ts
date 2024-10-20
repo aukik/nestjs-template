@@ -40,16 +40,15 @@ describe('Passenger API', () => {
             algorithm: 'HS256',
             issuer: `${process.env.JWT_ISSUER}`
         });
-        request(app.getHttpServer() as App)
+        await request(app.getHttpServer() as App)
         .get('/passengers')
         .set('Authorization', `Bearer ${token}`)
         .expect(HttpStatus.OK)
         .then(response => {
             expect(response.body.data).toBeInstanceOf(Array);
             expect(response.body.data.length).toEqual(0);
-        })
+        });
     }
-    
     );
 
     it('Should insert new passenger in the API', async () => {
@@ -65,8 +64,8 @@ describe('Passenger API', () => {
             .send({
                 firstName: 'John',
                 lastName: 'Doe',
-                email:"test@dev.com",
-                password:"password"
+                email:'test@dev.com',
+                password:'password'
             })
             .expect(HttpStatus.CREATED)
             .then(response => {
