@@ -1,4 +1,4 @@
 import { PickType } from '@nestjs/swagger';
-import { PassengerData } from './passenger.data';
+import { PassengerInputData } from './passenger.data';
 
-export class PassengerInput extends PickType(PassengerData, ['firstName', 'lastName','email','password'] as const) {}
+export class PassengerInput extends PickType(PassengerInputData, ['firstName', 'lastName','email','password'] as const) {}

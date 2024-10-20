@@ -30,7 +30,7 @@ export class BasePassenger implements PassengerWithoutPassword {
     }
 }
 
-export class PassengerData extends BasePassenger {
+export class PassengerInputData extends BasePassenger {
     @ApiProperty({ description: 'Password', example: 'password' })
     public readonly password: string;
 
