@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Passenger as PassengerPrisma } from '@prisma/client';
 
-//no password necessary in BasePassenger
+// no password necessary in BasePassenger
 type PassengerWithoutPassword = Omit<PassengerPrisma, 'password'>;
 
 export class BasePassenger implements PassengerWithoutPassword {
@@ -25,7 +25,7 @@ export class BasePassenger implements PassengerWithoutPassword {
     @ApiProperty({ description: 'Email', example: 'test@dev.com' })
     public readonly email: string;
 
-    constructor(entity: PassengerWithoutPassword) {
+    public constructor(entity: PassengerWithoutPassword) {
         Object.assign(this, entity);
     }
 }
@@ -34,39 +34,8 @@ export class PassengerInputData extends BasePassenger {
     @ApiProperty({ description: 'Password', example: 'password' })
     public readonly password: string;
 
-    constructor(entity: PassengerPrisma) {
+    public constructor(entity: PassengerPrisma) {
         super(entity);
         this.password = entity.password;
-    }
-}
-
-export class PassengerResponseDataWrapper {
-    @ApiProperty({ description: 'Wrapped data',type:BasePassenger })
-    public readonly data: BasePassenger;
-
-    constructor(data: BasePassenger) {
-        this.data = data;
-    }
-}
-
-export class PassengerResponse extends PassengerResponseDataWrapper{
-
-    constructor(entity: BasePassenger) {
-        super(new BasePassenger(entity));
-    }
-}
-
-export class PassengersListResponseDataWrapper {
-    @ApiProperty({ description: 'Wrapped data', type: [BasePassenger] })
-    public readonly data: BasePassenger[];
-
-    constructor(data: BasePassenger[]) {
-        this.data = data;
-    }
-}
-
-export class PassengersListResponse extends PassengersListResponseDataWrapper {
-    constructor(entities: BasePassenger[]) {
-        super(entities.map(entity => new BasePassenger(entity)));
     }
 }

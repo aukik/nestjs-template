@@ -26,7 +26,7 @@ export class PassengerService {
                 email: true
             }
         });
-        
+
         return new PassengersListResponse(passengers);
     }
 
@@ -48,7 +48,7 @@ export class PassengerService {
                 email: true,
             }
         });
-        
+
         return new PassengerResponse(passenger);
     }
 
