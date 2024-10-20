@@ -16,16 +16,7 @@ export class PassengerService {
      * @returns A passenger list
      */
     public async find(): Promise<PassengersListResponse> {
-        const passengers = await this.prismaService.passenger.findMany({
-            select: {
-                id: true,
-                createdAt: true,
-                updatedAt: true,
-                firstName: true,
-                lastName: true,
-                email: true
-            }
-        });
+        const passengers = await this.prismaService.passenger.findMany({});
 
         return new PassengersListResponse(passengers);
     }
@@ -38,15 +29,7 @@ export class PassengerService {
      */
     public async create(data: PassengerInput): Promise<PassengerResponse> {
         const passenger = await this.prismaService.passenger.create({
-            data,
-            select: {
-                id: true,
-                createdAt: true,
-                updatedAt: true,
-                firstName: true,
-                lastName: true,
-                email: true,
-            }
+            data
         });
 
         return new PassengerResponse(passenger);

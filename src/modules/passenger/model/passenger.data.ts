@@ -1,10 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Passenger as PassengerPrisma } from '@prisma/client';
+import { Passenger  } from '@prisma/client';
 
-// no password necessary in BasePassenger
-type PassengerWithoutPassword = Omit<PassengerPrisma, 'password'>;
 
-export class BasePassenger implements PassengerWithoutPassword {
+export class BasePassenger  {
     public static readonly NAME_LENGTH = 50;
 
     @ApiProperty({ description: 'Passenger unique ID', example: '36635263' })
@@ -22,20 +20,8 @@ export class BasePassenger implements PassengerWithoutPassword {
     @ApiProperty({ description: 'Last name', example: 'Doe' })
     public readonly lastName: string;
 
-    @ApiProperty({ description: 'Email', example: 'test@dev.com' })
-    public readonly email: string;
 
-    public constructor(entity: PassengerWithoutPassword) {
+    public constructor(entity: Passenger) {
         Object.assign(this, entity);
-    }
-}
-
-export class PassengerInputData extends BasePassenger {
-    @ApiProperty({ description: 'Password', example: 'password' })
-    public readonly password: string;
-
-    public constructor(entity: PassengerPrisma) {
-        super(entity);
-        this.password = entity.password;
     }
 }

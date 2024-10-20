@@ -10,6 +10,19 @@ datasource db {
     url      = env("DATABASE_URL")
 }
 
+model User {
+    id        String   @id @default(uuid())
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    firstName String
+    lastName  String
+    email     String   @unique
+    password  String
+
+}
+
+
 model Passenger {
     id        String   @id @default(uuid())
     createdAt DateTime @default(now())
@@ -17,6 +30,5 @@ model Passenger {
 
     firstName String @unique
     lastName  String
-    email     String
-    password  String
+
 }
